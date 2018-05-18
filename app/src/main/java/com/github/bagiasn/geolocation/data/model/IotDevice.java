@@ -21,10 +21,6 @@ public class IotDevice {
         return chipId;
     }
 
-    public List<LatLng> getPositionHistory() {
-        return positionHistory;
-    }
-
     public void addPosition(LatLng newPosition) {
         positionHistory.add(newPosition);
     }

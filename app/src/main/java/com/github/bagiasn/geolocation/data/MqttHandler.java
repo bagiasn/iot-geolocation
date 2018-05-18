@@ -17,6 +17,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MqttHandler implements MqttCallback {
     // Logging tag.
@@ -24,17 +25,22 @@ public class MqttHandler implements MqttCallback {
     private static final String MQTT_SERVER = "tcp://207.154.229.161:1883";
     private static final String MQTT_USER = "nikos";
     private static final String MQTT_PWD = "jarvis34";
-    private static final String TOPIC = "test";
+    private static final String TOPIC = "home";
     private static final int QOS = 1;
 
     private  MqttAndroidClient client;
     private OnMqttEventListener callback;
     private ArrayList<IotDevice> iotDevices;
 
+    private HashMap<String, String> chipNames = new HashMap<>();
+
     public MqttHandler(Context context, OnMqttEventListener callback) {
         this.client =  new MqttAndroidClient(context, MQTT_SERVER, MqttClient.generateClientId());
         this.callback = callback;
         this.iotDevices = new ArrayList<>();
+        chipNames.put("2844093", "NodeMCU1");
+        chipNames.put("98822", "NodeMCU2");
+        chipNames.put("2757195", "NodeMCU3");
     }
 
     public void start() {
@@ -82,7 +88,7 @@ public class MqttHandler implements MqttCallback {
 
     @Override
     public void connectionLost(Throwable cause) {
-        Log.e(TAG, "Connection lost. Cause: " + cause.getLocalizedMessage());
+        Log.e(TAG, "Connection lost. Cause: " + cause.getMessage());
     }
 
     @Override
@@ -108,7 +114,7 @@ public class MqttHandler implements MqttCallback {
             double lat = Double.valueOf(splitMessage[1]);
             double lang = Double.valueOf(splitMessage[2]);
 
-            IotDevice newDevice = new IotDevice(splitMessage[0]);
+            IotDevice newDevice = new IotDevice(chipNames.get(splitMessage[0]));
             if (iotDevices.contains(newDevice)) {
                 IotDevice device = iotDevices.get(iotDevices.indexOf(newDevice));
                 device.updateMarker(new LatLng(lat, lang));
