@@ -67,11 +67,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         device.setMarker(marker);
 
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(device.getCurrentPosition())      // Sets the center of the map to Mountain View
-                .zoom(20)                   // Sets the zoom
+                .target(device.getCurrentPosition())      // Sets the center of the map to the device's position
+                .zoom(19)                   // Set to (almost) maximum zoom
+                .bearing(180)
                 .build();                   // Creates a CameraPosition from the builder
 
-        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 3000, null);
     }
 
 }
